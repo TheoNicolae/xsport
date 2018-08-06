@@ -18,40 +18,49 @@
 
 package com.example.demoapp.controller;
 
-import com.example.demoapp.model.AdminUser;
-import com.example.demoapp.repo.AdminUserRepo;
+import com.example.demoapp.dto.LocatieDto;
+import com.example.demoapp.service.AdminService;
+import com.example.demoapp.service.LocatieService;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 
 /**
  * Created by TheoNicolae on 04/08/2018.
  */
 @Controller
-@RequestMapping(path = "/xsport")
+@RequestMapping(path = "/xsport/admin")
 public class AdminController {
 
-  private static final String RASPUNS = "Userul a fost salvat";
-
   @Autowired
-  private AdminUserRepo userRepo;
+  private AdminService adminService;
+  @Autowired
+  private LocatieService locatieService;
+
 
   @GetMapping(path = "/addAdmin")
-  public @ResponseBody
-  String addNewUser(@RequestParam String username, @RequestParam String password) {
-
-    AdminUser user = new AdminUser();
-    user.setUsername(username);
-    user.setPassword(password);
-    userRepo.save(user);
-    return RASPUNS;
+  @ResponseBody
+  public JSONObject addNewUser(@RequestParam String username, @RequestParam String password) {
+    return adminService.createUser(username, password);
   }
 
   @GetMapping(path = "/getAdminList")
-  public @ResponseBody Iterable<AdminUser> getAdmins() {
-    return userRepo.findAll();
+  @ResponseBody
+  public JSONObject getAdmins() {
+    return adminService.getAllAdmins();
   }
+
+  @RequestMapping(path = "/addLocatie", method = RequestMethod.POST)
+  @ResponseBody
+  public JSONObject addLocatie(@RequestBody LocatieDto locatieDto) {
+    return locatieService.addLocatie(locatieDto);
+  }
+
 }
