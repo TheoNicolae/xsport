@@ -32,7 +32,7 @@ public class LocatieService {
     Locatie locatie = buildLocatie(regiune, locatieDto);
 
     locatieRepo.save(locatie);
-    return locationSuccessResponse();
+    return locationResponse("Locatia a fost salvata cu succes!");
 
   }
 
@@ -41,7 +41,7 @@ public class LocatieService {
     Optional<Locatie> loc = getLocatieByName(nume);
 
     if (!loc.isPresent()) {
-      return locationNotFoundResponse();
+      return locationResponse("Locatia nu a fost gasita!");
     }
 
     Locatie locatie = loc.get();
@@ -53,7 +53,7 @@ public class LocatieService {
     }
 
     locatieRepo.save(locatie);
-    return locationSuccessResponse();
+    return locationResponse("Locatia a fost updatata cu succes!");
 
   }
 
@@ -61,10 +61,10 @@ public class LocatieService {
 
     Optional<Locatie> locatie = getLocatieByName(nume);
     if (!locatie.isPresent()) {
-      return locationNotFoundResponse();
+      return locationResponse("Locatia nu a fost gasita!");
     }
-    locatieRepo.delete(locatie.get());
-    return locationSuccessResponse();
+    locatieRepo.deleteById(locatie.get().getId());
+    return locationResponse("Locatie stearsa cu succes!");
   }
 
   public JSONObject getAllLocatii() {
@@ -73,15 +73,9 @@ public class LocatieService {
     return response;
   }
 
-  private JSONObject locationSuccessResponse() {
+  private JSONObject locationResponse(String s) {
     JSONObject response = new JSONObject();
-    response.put("Locatie salvata cu succes!", locatieRepo.findAll());
-    return response;
-  }
-
-  private JSONObject locationNotFoundResponse() {
-    JSONObject response = new JSONObject();
-    response.put("Locatia nu a fost gasita!", locatieRepo.findAll());
+    response.put(s, locatieRepo.findAll());
     return response;
   }
 
