@@ -1,20 +1,3 @@
-/*
- * Copyright (c) 2018, UXP Systems, Inc.
- * All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of UXP Systems Incorporated and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to UXP Systems Incorporated
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from UXP Systems Incorporated.
- * UXDR, ULM, Powering The Digital User Lifecycle and User Lifecycle Management
- * are all trademarks of UXP Systems Inc.
- */
-
 
 package com.example.demoapp.service;
 
@@ -23,10 +6,11 @@ import com.example.demoapp.model.Locatie;
 import com.example.demoapp.model.Regiune;
 import com.example.demoapp.model.Tara;
 import com.example.demoapp.repo.LocatieRepo;
-import com.example.demoapp.repo.SportRepo;
-import com.example.demoapp.repo.TaraRepo;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by TheoNicolae on 06/08/2018.
@@ -34,10 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LocatieService {
   @Autowired
   private LocatieRepo locatieRepo;
-  @Autowired
-  private SportRepo sportRepo;
-  @Autowired
-  private TaraRepo taraRepo;
 
   public JSONObject addLocatie(LocatieDto locatieDto) {
 
@@ -47,21 +27,49 @@ public class LocatieService {
     Regiune regiune = new Regiune();
     regiune.setNume(locatieDto.getRegiune());
     regiune.setTara(tara);
+    tara.setRegiuni(regiune);
 
     Locatie locatie = new Locatie();
     locatie.setNume(locatieDto.getNume());
     locatie.setRegiune(regiune);
     locatie.setSport(locatieDto.getSport());
     locatie.getSport().forEach(sport -> sport.getLocatii().add(locatie));
+    regiune.getLocatii().add(locatie);
 
     locatieRepo.save(locatie);
     return locationSuccessResponse();
 
   }
 
+  public JSONObject stergeLocatie(String nume) {
+
+    Iterable<Locatie> locatii = locatieRepo.findAll();
+    Optional<Locatie> locatie = StreamSupport
+        .stream(locatii.spliterator(), false)
+        .filter(l -> l.getNume().equalsIgnoreCase(nume))
+        .findAny();
+    if (!locatie.isPresent()) {
+      return locationNotFoundResponse();
+    }
+    locatieRepo.delete(locatie.get());
+    return locationSuccessResponse();
+  }
+
+  public JSONObject getAllLocatii(){
+    JSONObject response = new JSONObject();
+    response.put("Lista locatii :", locatieRepo.findAll());
+    return response;
+  }
+
   private JSONObject locationSuccessResponse() {
     JSONObject response = new JSONObject();
     response.put("Locatie salvata cu succes!", locatieRepo.findAll());
+    return response;
+  }
+
+  private JSONObject locationNotFoundResponse() {
+    JSONObject response = new JSONObject();
+    response.put("Locatia nu a fost gasita!", locatieRepo.findAll());
     return response;
   }
 
