@@ -23,7 +23,7 @@ public class Locatie {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  private long id;
 
   private String nume;
 
@@ -34,11 +34,11 @@ public class Locatie {
   @ManyToMany(mappedBy = "locatii", cascade = CascadeType.ALL)
   private Set<Sport> sport = new HashSet<>();
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(long id) {
     this.id = id;
   }
 

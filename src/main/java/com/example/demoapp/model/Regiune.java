@@ -13,8 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by TheoNicolae on 04/08/2018.
@@ -30,7 +30,7 @@ public class Regiune {
 
   @JsonManagedReference
   @OneToMany(cascade = CascadeType.ALL)
-  private List<Locatie> locatii = new ArrayList<>();
+  private Set<Locatie> locatii = new HashSet<>();
 
   @JsonBackReference
   @ManyToOne(cascade = CascadeType.ALL)
@@ -60,11 +60,11 @@ public class Regiune {
     this.tara = tara;
   }
 
-  public List<Locatie> getLocatii() {
+  public Set<Locatie> getLocatii() {
     return locatii;
   }
 
-  public void setLocatii(List<Locatie> locatii) {
+  public void setLocatii(Set<Locatie> locatii) {
     this.locatii = locatii;
   }
 }

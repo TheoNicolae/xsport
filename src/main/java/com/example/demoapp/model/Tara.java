@@ -14,8 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by TheoNicolae on 04/08/2018.
@@ -33,7 +33,7 @@ public class Tara implements Serializable {
   private String nume;
   @JsonManagedReference
   @OneToMany(cascade = CascadeType.ALL)
-  private List<Regiune> regiuni = new ArrayList<>();
+  private Set<Regiune> regiuni = new HashSet<>();
 
   public long getId() {
     return id;
@@ -51,7 +51,7 @@ public class Tara implements Serializable {
     this.nume = nume;
   }
 
-  public List<Regiune> getRegiuni() {
+  public Set<Regiune> getRegiuni() {
     return regiuni;
   }
 

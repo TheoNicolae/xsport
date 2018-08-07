@@ -48,10 +48,10 @@ public class AdminController {
     return locatieService.addLocatie(locatieDto);
   }
 
-  @RequestMapping(path = "/deleteLocatie", method = RequestMethod.POST)
+  @GetMapping(path = "/deleteLocatie")
   @ResponseBody
-  public JSONObject deleteLocatie(@RequestBody LocatieDto locatieDto) {
-    return locatieService.stergeLocatie(locatieDto.getNume());
+  public JSONObject deleteLocatie(@RequestParam String numeLocatie) {
+    return locatieService.stergeLocatie(numeLocatie);
   }
 
   @GetMapping(path = "/getListaLocatii")
@@ -59,5 +59,12 @@ public class AdminController {
   public JSONObject getListaLocatii() {
     return locatieService.getAllLocatii();
   }
+
+  @RequestMapping(path = "/UpdateLocatie", method = RequestMethod.POST)
+  @ResponseBody
+  public JSONObject updateLocatie(@RequestParam String numeLocatie, @RequestBody LocatieDto locatieDto) {
+    return locatieService.updateLocatie(numeLocatie, locatieDto);
+  }
+
 
 }

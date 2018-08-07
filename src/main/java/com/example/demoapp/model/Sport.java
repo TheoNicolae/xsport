@@ -4,7 +4,6 @@
 package com.example.demoapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -27,7 +26,7 @@ public class Sport {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
 
-  private String denumire;
+  private String nume;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JsonBackReference
@@ -51,12 +50,12 @@ public class Sport {
     this.id = id;
   }
 
-  public String getDenumire() {
-    return denumire;
+  public String getNume() {
+    return nume;
   }
 
-  public void setDenumire(String denumire) {
-    this.denumire = denumire;
+  public void setNume(String nume) {
+    this.nume = nume;
   }
 
   public Double getCost() {
