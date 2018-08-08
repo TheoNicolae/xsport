@@ -60,7 +60,7 @@ public class AdminController {
     return locatieService.getAllLocatii();
   }
 
-  @RequestMapping(path = "/UpdateLocatie", method = RequestMethod.POST)
+  @RequestMapping(path = "/updateLocatie", method = RequestMethod.POST)
   @ResponseBody
   public JSONObject updateLocatie(@RequestParam String numeLocatie, @RequestBody LocatieDto locatieDto) {
     return locatieService.updateLocatie(numeLocatie, locatieDto);

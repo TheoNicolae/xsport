@@ -157,7 +157,7 @@ public class LocatieService {
     }
 
     tara.setRegiuni(regiune);
-
+    regiuneRepo.save(regiune);
     return regiune;
   }
 

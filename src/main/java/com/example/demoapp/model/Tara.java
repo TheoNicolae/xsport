@@ -32,7 +32,7 @@ public class Tara implements Serializable {
 
   private String nume;
   @JsonManagedReference
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Regiune> regiuni = new HashSet<>();
 
   public long getId() {

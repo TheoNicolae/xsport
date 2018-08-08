@@ -28,7 +28,7 @@ public class Locatie {
   private String nume;
 
   @JsonBackReference
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne
   private Regiune regiune;
 
   @ManyToMany(mappedBy = "locatii", cascade = CascadeType.ALL)
