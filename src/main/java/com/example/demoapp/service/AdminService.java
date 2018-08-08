@@ -15,7 +15,8 @@ public class AdminService {
   @Autowired
   private AdminUserRepo userRepo;
 
-
+  //Clasa asta a fost creata in scopul securizarii api-urilor din path-ul /xsport/admin
+  //Ramane de implementat aceasta functionalitate
   public JSONObject createUser(String username, String password) {
     AdminUser u = new AdminUser();
     u.setUsername(username);

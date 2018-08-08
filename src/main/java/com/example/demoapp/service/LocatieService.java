@@ -2,15 +2,23 @@
 package com.example.demoapp.service;
 
 import com.example.demoapp.dto.LocatieDto;
+import com.example.demoapp.dto.OfertaDto;
 import com.example.demoapp.model.Locatie;
 import com.example.demoapp.model.Regiune;
+import com.example.demoapp.model.Sport;
 import com.example.demoapp.model.Tara;
 import com.example.demoapp.repo.LocatieRepo;
 import com.example.demoapp.repo.RegiuneRepo;
+import com.example.demoapp.repo.SportRepo;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -22,6 +30,8 @@ public class LocatieService {
   private LocatieRepo locatieRepo;
   @Autowired
   private RegiuneRepo regiuneRepo;
+  @Autowired
+  private SportRepo sportRepo;
 
   public JSONObject addLocatie(LocatieDto locatieDto) {
 
@@ -70,6 +80,46 @@ public class LocatieService {
   public JSONObject getAllLocatii() {
     JSONObject response = new JSONObject();
     response.put("Lista locatii :", locatieRepo.findAll());
+    return response;
+  }
+
+  public JSONObject getOfertaLocatii(OfertaDto ofertaDto) {
+    Iterable<Sport> sporturi = sportRepo.findAll();
+    List<Sport> lista = new ArrayList<>();
+    for (String sport : ofertaDto.getSporturi()) {
+      List<Sport> listaInner = StreamSupport
+          .stream(sporturi.spliterator(), false)
+          .filter(s -> s.getNume().equalsIgnoreCase(sport))
+          .collect(Collectors.toList());
+      lista.add(listaInner.get(0));
+    }
+    if (lista == null) {
+      return locationResponse("Sportul selectat nu exista!");
+    }
+
+    List<Sport> sporturiFunctieDePerioada = new ArrayList<>();
+    sporturiFunctieDePerioada.addAll(getSporturiByPerioada(ofertaDto.getPerioadaMaxima(), lista));
+    sporturiFunctieDePerioada.addAll(getSporturiByPerioada(ofertaDto.getPerioadaMinima(), lista));
+    List<Sport> listWithoutDuplicates = sporturiFunctieDePerioada.stream().distinct().collect(Collectors.toList());
+    if (listWithoutDuplicates.isEmpty()) {
+      return ofertaResponse("Nu a fost gasit niciun sport in perioada selectata !", listWithoutDuplicates);
+    }
+    listWithoutDuplicates.sort(Comparator.comparing(Sport::getCost));
+    return ofertaResponse("Oferta :", listWithoutDuplicates);
+  }
+
+  private List<Sport> getSporturiByPerioada(String perioada, List<Sport> lista) {
+
+    return lista.stream()
+        .filter(sport -> sport.getPerioada()
+            .contains(perioada
+                .substring(perioada.length() - 3)))
+        .collect(Collectors.toList());
+  }
+
+  private JSONObject ofertaResponse(String s, List<Sport> list) {
+    JSONObject response = new JSONObject();
+    response.put(s, list);
     return response;
   }
 
